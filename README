@@ -1,0 +1,94 @@
+	Ruby compilation at /usr/local/ruby
+
+System use to complie is ubuntu 11.10 (32 bit). But this will work in 64 bit too.
+
+http://ftp.ruby-lang.org/pub/ruby/
+Above is the path to select the require ruby source download.
+
+I have use the following ruby version i.e. ruby 1.8.7 with patch 358 (currently use in ss1 production)
+http://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.bz2
+
+PROMPT >mkdir ~/download
+PROMPT >cd ~/download
+PROMPT >wget http://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.bz2 
+PROMPT >tar jxf ruby*.bz2
+PROMPT >./configure --prefix=/usr/local/ruby-1.8.7
+PROMPT >sudo mkdir /usr/local/ruby-1.8.7
+PROMPT >sudo chown -R deploy:deploy /usr/local/ruby-1.8.7
+PROMPT >sudo ln -s  /usr/local/ruby-1.8.7 /usr/local/ruby
+PROMPT >make
+PROMPT >make test
+test succeeded
+PROMPT >make install
+
+
+http://rubyforge.org/frs/?group_id=126
+Above is the url to select the require rubygem version.
+
+PROMPT >cd ~/download
+PROMPT >wget http://rubyforge.org/frs/download.php/76073/rubygems-1.8.24.tgz
+PROMPT >tar -xzvf rubygems*.tgz
+PROMPT >cd rubygems*
+PROMPT >sudo /usr/local/ruby/bin/ruby  setup.rb 
+[sudo] password for deploy: 
+RubyGems 1.8.24 installed
+
+== 1.8.24 / 2012-04-27
+
+* 1 bug fix:
+
+  * Install the .pem files properly. Fixes #320
+  * Remove OpenSSL dependency from the http code path
+
+
+------------------------------------------------------------------------------
+
+RubyGems installed the following executables:
+	/usr/local/ruby-1.8.7/bin/gem
+
+PROMPT >cat /etc/environment 
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games"
+change to as follows.
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/ruby:/usr/local/ruby/bin"
+
+PROMPT > sudo apt-get install zlib1g zlib1g-dev
+PROMPT > sudo apt-get install build-essential libssl-dev libreadline5 
+PROMPT > sudo apt-get install openssl
+PROMPT > sudo apt-get install zlib1g-dev
+PROMPT > sudo apt-get install libmysqlclient-dev
+PROMPT > cd ~/downoad/ruby/ext/zlib
+PROMPT > ruby extconf.rb
+checking for deflateReset() in -lz... yes
+checking for zlib.h... yes
+checking for kind of operating system... Unix
+creating Makefile
+PROMPT > make
+gcc -I. -I. -I/usr/local/ruby-1.8.7/lib/ruby/1.8/i686-linux -I. -DHAVE_ZLIB_H  -DOS_CODE=OS_UNIX  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2   -c zlib.c
+gcc -shared -o zlib.so zlib.o -L. -L/usr/local/ruby-1.8.7/lib -Wl,-R/usr/local/ruby-1.8.7/lib -L.  -rdynamic -Wl,-export-dynamic    -lz  -lrt -ldl -lcrypt -lm   -lc
+PROMPT > sudo make install
+[sudo] password for deploy: 
+/usr/bin/install -c -m 0755 zlib.so /usr/local/ruby-1.8.7/lib/ruby/site_ruby/1.8/i686-linux
+
+Install the following gems sample commands are given below.
+
+net-scp (1.0.4)
+net-sftp (2.0.5)
+net-ssh (2.5.2)
+net-ssh-gateway (1.1.0)
+passenger (3.0.13)
+rack (1.4.1)
+rake (0.9.2.2)
+rubygems-bundler (1.0.3)
+rubygems-update (1.3.7)
+xml-simple (1.1.1)
+zmq (2.1.4)
+
+Below are the example how to install gem with sepcific version
+
+sudo ./gem install fastthread -v 1.0.7 --no-rdoc --no-ri 
+sudo ./gem install json -v 1.7.3 --no-rdoc --no-ri
+sudo ./gem install mysql -v 2.8.1 --no-rdoc --no-ri
+sudo ./gem install passenger -v 3.0.13 --no-rdoc --no-ri
+sudo ./gem install rubygems-bundler -v 1.0.3 --no-rdoc --no-ri
+sudo ./gem install rubygems-update -v 1.3.7 --no-rdoc --no-ri
+sudo ./gem install zmq -v 2.1.4 --no-rdoc --no-ri
